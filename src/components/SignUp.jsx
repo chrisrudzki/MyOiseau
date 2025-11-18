@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from "react";
 import { auth } from "../firebase.js";
 
-import { doc, setDoc} from "firebase/firestore";
+// import { doc, setDoc} from "firebase/firestore";
 
 //auth
 import { 
