@@ -8,7 +8,7 @@ import StartScreen from "./components/StartScreen.jsx"
 import Map from "./components/Map.jsx"
 import { auth } from "./firebase.js"
 
-import {onAuthStateChanged, signOut } from 'firebase/auth';
+import {onAuthStateChanged } from 'firebase/auth';
 
 function App() {
   const [curStartDisplay, setCurStartDisplay] = useState(true);
@@ -26,11 +26,7 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  const logout = async () => {
-      // console.log("logged out");
-      await signOut(auth);
-    }
-  
+ 
   return (
     <>
     {curStartDisplay ? <StartScreen onDisplayStart={setCurStartDisplay}/> : undefined}
