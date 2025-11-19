@@ -7,6 +7,8 @@ import './App.css'
 import StartScreen from "./components/StartScreen.jsx"
 import { auth } from "./firebase.js"
 
+import {onAuthStateChanged, signOut } from 'firebase/auth';
+
 
 function App() {
   const [curStartDisplay, setCurStartDisplay] = useState(true);
@@ -20,14 +22,26 @@ function App() {
         console.log("User is logged out.");
         setCurStartDisplay(true);
       }
-      //  setCurStartDisplay(false); // to take away start screen
     });
     return () => unsubscribe();
   }, []);
+
+  const logout = async () => {
+      // console.log("logged out");
+      await signOut(auth);
+    }
   
   return (
     <>
     {curStartDisplay ? <StartScreen onDisplayStart={setCurStartDisplay}/> : undefined}
+
+    
+
+
+    <button onClick={logout}style={{ pointerEvents: "auto" }}>log out</button>
+    
+    <p>hello!</p>
+
     </>
   )
 }

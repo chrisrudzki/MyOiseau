@@ -16,8 +16,7 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submittedData, setSubmittedData] = useState(null);
-//   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const createAccount = async () => {
     setSubmittedData({ email, password });
     try {
