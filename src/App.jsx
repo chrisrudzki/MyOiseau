@@ -35,11 +35,7 @@ function App() {
     <>
     {curStartDisplay ? <StartScreen onDisplayStart={setCurStartDisplay}/> : undefined}
 
-    <button onClick={logout}style={{ pointerEvents: "auto" }}>log out</button>
     
-    <Map></Map>
-    <p>hello!</p>
-
     </>
   )
 }
