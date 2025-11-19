@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from "react";
 import { auth } from "../firebase.js";
 
+
 // import { doc, setDoc} from "firebase/firestore";
 
 //auth
@@ -50,28 +51,7 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-//   const submitUser = async () => {
 
-//     await sleep(1000); 
-
-//     if (!auth.currentUser){
-//       console.error("ERROR!");
-//       return;
-//     }
-
-//     try {
-//     await setDoc(doc(Firestore, "users", auth.currentUser.uid), {
-//       email: email,
-//       username: "douglas",
-//       born: 1811115
-//     });
-    
-//     console.log("Document written with ID: ", auth.currentUser);
-//     } catch (e) {
-//       console.error("Error adding document: ", e);
-//     }
-
-//   }
 
   return (
     <>

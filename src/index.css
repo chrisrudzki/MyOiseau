@@ -1,68 +1,205 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+#root {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  /* padding: 2rem; */
+  text-align: center;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+html, body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.post-pin:hover {
+cursor: pointer;
 }
+
+.log-screen-button {
+    display: flex;              
+    justify-content: center;     
+    align-items: center;       
+    background-color: #755BAE;
+    appearance: none;
+    width: 70px;
+    height: 20px;           
+    border: none;
+    outline: none;
+    color: #EEEEEE;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.log-screen-button:hover {
+  background-color: #8270AB;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  padding: 1px 2px; /* top/bottom, left/right */
+  height: 20px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.overlay-map {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100; /* Higher z-index = on top */
 }
+
+.overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000; 
+  background-color: #47366D;
+  top: 0;               
+  left: 0;            
+}
+
+.sign-in-box {
+  width: 300px;
+  background-color: #ABABAB;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  position: relative;
+  z-index: 1000; 
+  justify-content: center;
+  align-items: center;
+  /* border-radius: 8px; */
+
+  }
+
+  .post-outer-box {
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;      /* vertical */
+  width: 50%;
+
+
+  }
+.post-box {
+  width: 100vw;
+  height: 50%;
+  background-color: #ABABAB;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 1000; 
+  justify-content: center;
+  align-items: center;
+  /* border-radius: 8px; */
+}
+
+
+.overlay-post {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  /* pointer-events: none; */
+}
+
+/* .fullscreen-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 50px;
+  box-sizing: border-box;
+} */
+
+
+  .sign-in-inner-box-config {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  }
+
+  .sign-in-inner-box {
+  width: 200px;
+  z-index: 1001; 
+  }
+
+
+  .post-inner-box-config {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+
+  }
+
+  .post-inner-box {
+  padding: 50px;
+  width: 100%;
+  z-index: 1001; 
+  padding: 10px;
+
+  }
+
+  .post-inner-box img {
+  width: 95%;
+  height: auto;         /* keeps aspect ratio */
+  }
+
+
+.right-side-bar {
+  position: fixed;   /* stays in place while scrolling */
+  right: 20px;       /* distance from right edge */
+  top: 10%; 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+
+

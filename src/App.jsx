@@ -5,10 +5,10 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import StartScreen from "./components/StartScreen.jsx"
+import Map from "./components/Map.jsx"
 import { auth } from "./firebase.js"
 
 import {onAuthStateChanged, signOut } from 'firebase/auth';
-
 
 function App() {
   const [curStartDisplay, setCurStartDisplay] = useState(true);
@@ -35,11 +35,9 @@ function App() {
     <>
     {curStartDisplay ? <StartScreen onDisplayStart={setCurStartDisplay}/> : undefined}
 
-    
-
-
     <button onClick={logout}style={{ pointerEvents: "auto" }}>log out</button>
     
+    <Map></Map>
     <p>hello!</p>
 
     </>
