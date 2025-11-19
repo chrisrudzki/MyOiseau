@@ -36,6 +36,9 @@ function App() {
     {curStartDisplay ? <StartScreen onDisplayStart={setCurStartDisplay}/> : undefined}
 
     
+    <Map></Map>
+    
+
     </>
   )
 }
