@@ -133,7 +133,7 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
       width: "100%"
     }}
     class="log-screen-button"
-    onClick={handleSubmit}>Sign in</button>
+    onClick={handleSubmit}>Sign inn</button>
 
   </div>
 
