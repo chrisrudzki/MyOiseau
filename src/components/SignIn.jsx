@@ -20,6 +20,7 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
       
     } catch (error) {
       setErrorMessage("Wrong e-mail or password, try again");
+      // setErrorMessage("invalid username or password");
       //console.("Failed:", error.code, error.message);
     }
   };
@@ -132,8 +133,9 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
     <button style={{
       width: "100%"
     }}
+    
     class="log-screen-button"
-    onClick={handleSubmit}>Sign inn</button>
+    onClick={handleSubmit}>Sign in</button>
 
   </div>
 

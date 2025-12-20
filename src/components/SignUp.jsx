@@ -17,6 +17,7 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submittedData, setSubmittedData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const createAccount = async () => {
     setSubmittedData({ email, password });
@@ -28,7 +29,7 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
       const rawMessage = error?.message ? String(error.message) : String(error);
       const match = rawMessage.match(/^Firebase:\s*(.+?)\s*\(/);
       const cleanMessage = match ? match[1] : rawMessage;
-      console.log("Failure:", cleanMessage, email, password);
+      setErrorMessage("invalid username or password");
 
     }
   };
@@ -180,6 +181,8 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
           boxSizing: "border-box"
         }}
         ></input>
+
+        <p>{errorMessage}</p>
 
     <button 
     style={{
