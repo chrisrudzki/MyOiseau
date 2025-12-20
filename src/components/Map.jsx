@@ -3,9 +3,7 @@ import { auth, Firestore } from "../firebase.js";
 import mapboxgl from 'mapbox-gl'
 
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-
 import { signOut } from 'firebase/auth';
-
 
 export default function Map({}) {
 
@@ -14,7 +12,6 @@ export default function Map({}) {
     const [allPosts, setPosts] = useState([]);
 
     const mapRef = useRef(null);
-
 
     useEffect(() => {
     if (!import.meta.env.VITE_MAPBOX_ACCESS_TOKEN){

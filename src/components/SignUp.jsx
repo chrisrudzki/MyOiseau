@@ -51,9 +51,7 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
-
-
+  
   return (
     <>
 

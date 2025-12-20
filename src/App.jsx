@@ -20,7 +20,8 @@ function App() {
         setCurStartDisplay(false);
       } else {
         console.log("User is logged out.");
-        setCurStartDisplay(true);
+        //setCurStartDisplay(true);
+        setCurStartDisplay(false);
       }
     });
     return () => unsubscribe();
