@@ -11,7 +11,6 @@ import '../App.css'
 export default function StartScreen({ onDisplayStart }) {
 
 const [isSignIn, setIsSignIn] = useState(true);
-
   return (
     <>
     <div class="overlay">
