@@ -1,24 +1,46 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext, createContext } from "react";
+import { PostContext } from '../services/PostContext.js'
+
 import { auth, Firestore } from "../firebase.js";
 import mapboxgl from 'mapbox-gl'
 import { canPost, changeCanPost, getCanPost } from "../services/globals.js";
 import '../index.css';
 
-
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 
-import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh} from '../services/postRepository.jsx';
+import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost} from '../services/postRepository.jsx';
 
 export default function Map({}) {
     const [curCanPost, setCurCanPost] = useState(false);
     const [inPost, setInPost] = useState(false);
-    // const [allPosts, setPosts] = useState([]);
+
+    const [allPosts, setPosts] = useState([]);
+    const [refresh, setRefresh] = useState(0);
+    const [myRoutes, setRoutes] = useState([]);
+    const [curMarker, setCurMarker] = useState(null);
 
     const mapRef = useRef(null);
     // const myRef = useRef(null);
-
     const navigate = useNavigate();
+
+    // let myRoutes = [];
+
+    function navBack(){
+      setInPost(false);
+      navigate(-1); 
+    }
+
+    async function delPost(url){
+      console.log("del post");
+      const updatedPosts = await doDelPost(url);
+      setPosts(updatedPosts); // now it's actual data
+
+      setRefresh(r => r + 1);
+      console.log("refresh: ", refresh);
+      //this should refresh allPosts, but it doesnt, make delPosts edit firebase then incroment refresh value
+    }
+
     //setPostMarkerRefresh
     useEffect(() => {
     if (!import.meta.env.VITE_MAPBOX_ACCESS_TOKEN){
@@ -30,10 +52,9 @@ export default function Map({}) {
       console.log(" navigate ");
       navigate("/" + url);     
     }
+
     
-//f19f7888-c798-4a1a-993e-439506626a80
-
-
+    
     //new post
     const handleMapClick = async (e) => {
       console.log("here2");
@@ -42,19 +63,24 @@ export default function Map({}) {
       if (getCanPost()) {
       //
       console.log("inside !", getCanPost());
-      changeCanPost();
-      setCurCanPost(false);
+
+      changeCanPost();//in file
+      setCurCanPost(false);//global
       
       //set is_post value 
       const url = crypto.randomUUID();
 
-      updatePosts(coords, url, setInPost);// send data to firebase
+      const updatedPosts = await updatePosts(coords, url, allPosts);
+      setPosts(updatedPosts); // now it's actual data
       
       const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]).addTo(mapRef.current);
       
       // console.log("lat", coords.lng, "long", coords.lat)
       Marker.getElement().addEventListener("click", ()=> {
         console.log("got to initalize");
+
+        setCurMarker(Marker);
+        console.log("marker: ", Marker);
         handlePostClick(url);
       });
 
@@ -63,134 +89,33 @@ export default function Map({}) {
       try{
       Marker.getElement().classList.add("post-pin");
       }catch(d){
-        console.log("yo!");
+        console.log("marker error !");
       }
       }
     }
 
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
     
-    mapRef.current = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/chrisrudzki/cmg6z3e6a00ew01rjdn9u35kw',
-      center: [-74.5, 40],
-      zoom: 9,
+      mapRef.current = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/chrisrudzki/cmg6z3e6a00ew01rjdn9u35kw',
+        center: [-74.5, 40],
+        zoom: 9,
       });
 
-    mapRef.current.setCenter([-123.312310125458, 48.464145303790666]);
-    mapRef.current.setZoom(13.5);
-
-    // mapRef.current.on('load', () => {
-    //   mapRef.current.on('click', handleMapClick);
-    // });
+      mapRef.current.setCenter([-123.312310125458, 48.464145303790666]);
+      mapRef.current.setZoom(13.5);
 
       mapRef.current.on('click', handleMapClick);
 
       // mapRef.current.on('load', () => {
 
       //after mapRef is created dirNavigate
-      setPostMarkerRefresh(mapRef, navTo);
+      setPostMarkerRefresh(mapRef, navTo, setCurMarker);
 
      }, []);
 
-    // create new post
-    // useEffect(() => {
-    // if (!mapRef.current) return;
-
-    // const handleMapClick = async (e) => { setPostMarkerRefresh
-
-    // console.log("here2");
-    // const coords = e.lngLat;
-    // if (curCanPost) {
-
-    //   //set is_post value 
-    //   const url = crypto.randomUUID();
-
-    //   updatePosts(coords, url, setInPost);// send data to firebase
-
-    //   const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]);
-
-    //   Marker.getElement().addEventListener("click", ()=> {
-
-    //     setCurCanPost(false);
-    //     if(url){
-    //       // console.log("doc ref:" + docRef);
-    //       handlePostClick(url);
-    //     }
-    //   });
-
-    //   Marker.getElement().classList.add("post-pin");
-
-    //   Marker.addTo(mapRef.current);
-
-    //   }
-    // }
-
-    // console.log("here");
-  
-    // // mapRef.current.on('click', handleMapClick);
-
-    // // return () => {
-    // //     mapRef.current.off('click', handleMapClick);
-    // // };
-
-    // }, [curCanPost]);
-
-
-
-
-    //make new post
-    // useEffect(() => {
-    //   if (!mapRef.current) return;
-
-    //   const map = mapRef.current;
-
-    //   const handleMapClick = (e) => {
-    //     console.log("here2");
-
-    //     const coords = e.lngLat;
-        
-    //     if (curCanPost) {
-    //     //set is_post value 
-    //     const url = crypto.randomUUID();
-
-    //     updatePosts(coords, url, setInPost);// send data to firebase
-
-    //     const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]);
-
-    //     Marker.getElement().addEventListener("click", ()=> {
-
-    //     setCurCanPost(false);
-    //     if(url){
-    //       // console.log("doc ref:" + docRef);
-    //       handlePostClick(url);
-    //     }
-    //   });
-
-    //   Marker.getElement().classList.add("post-pin");
-
-    //   Marker.addTo(mapRef.current);
-    //   }
-
-    //   };
-
-    //   const onLoad = () => {
-    //     map.on("click", handleMapClick);
-    //   };
-
-    //   map.on("load", onLoad);
-
-    //   return () => {
-    //     map.off("click", handleMapClick);
-    //     map.off("load", onLoad);
-    //   };
-    // }, [curCanPost]);
-
-
-    useEffect(() => {
-      setPostRefresh(setInPost);
-
-    }, []);
+   
 
     // useEffect(() => {
     //   setPostMarkerRefresh(mapRef);
@@ -205,14 +130,23 @@ export default function Map({}) {
     const handlePostButton = () => {
       setCurCanPost(prev => !prev);
       changeCanPost();
-
     }
 
     async function handlePostClick(url){ 
       console.log(" navigate ");
       navigate("/" + url);
-            
     }
+
+    // refresh page with routes of posts
+    useEffect(() => {
+      async function setRoutesFunc(){
+        const myPosts = await setPostRefresh();
+        setPosts(myPosts);
+      }
+      setRoutesFunc();
+
+      }, [refresh]);
+
 
     return (
     <>
@@ -235,9 +169,20 @@ export default function Map({}) {
         </div>
 
         {/* whats going on here exactly? */}
-        
-        {buildRoutes(inPost)}
 
+       <PostContext.Provider value={{ refresh, setRefresh, navBack, setInPost, delPost, curMarker}}>
+    <div className="overlay-post" style={{ pointerEvents: inPost ? "auto" : "none" }}>
+       <Routes>
+           {
+           allPosts.map( Post => (
+              // console.log("post: path", Post.key),
+             Post
+           ))
+          }
+        </Routes>
+     </div>
+       </PostContext.Provider>
+      
         <div id="map" style={{ width: '100vw', height: '100vh' }}></div>
 
         {/* <div id="map"></div> */}
