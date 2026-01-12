@@ -14,7 +14,7 @@ import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPo
 export default function Map({}) {
     const [curCanPost, setCurCanPost] = useState(false);
     const [inPost, setInPost] = useState(false);
-
+    
     const [allPosts, setPosts] = useState([]);
     const [refresh, setRefresh] = useState(0);
     const [myRoutes, setRoutes] = useState([]);
