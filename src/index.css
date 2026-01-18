@@ -5,6 +5,29 @@
   text-align: center;
 }
 
+.sign-in-up-boxes { 
+  padding-right: 7px;
+  padding-left: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 2px;
+  margin-bottom: 7px;
+  width: 100%;
+  height: 24px;
+  border-radius: 1px; /* makes corners perfectly square */
+  border: none;
+  outline: none;
+  font-weight: bold;
+  box-sizing: border-box;
+
+} 
+
+.sign-in-up-info-text{
+  font-size: 15px;
+  text-align: left;
+  font-family: Arial;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -84,7 +107,7 @@ cursor: pointer;
 
 
 button {
-  padding: 1px 2px; /* top/bottom, left/right */
+  padding: 1px 2px; 
   height: 20px;
   cursor: pointer;
 }
@@ -95,7 +118,7 @@ button {
   position: fixed;
   width: 100vw;
   height: 100vh;
-  z-index: 100; /* Higher z-index = on top */
+  z-index: 100; 
 }
 
 .overlay {
@@ -127,8 +150,8 @@ button {
 
   .post-outer-box {
   display: flex;
-  justify-content: center; /* horizontal */
-  align-items: center;      /* vertical */
+  justify-content: center; 
+  align-items: center;     
   width: 50%;
 
 
@@ -156,14 +179,6 @@ button {
   z-index: 1000;
   /* pointer-events: none; */
 }
-
-/* .fullscreen-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 50px;
-  box-sizing: border-box;
-} */
 
 
   .sign-in-inner-box-config {
@@ -197,13 +212,13 @@ button {
 
   .post-inner-box img {
   width: 95%;
-  height: auto;         /* keeps aspect ratio */
+  height: auto;         
   }
 
 
 .right-side-bar {
-  position: fixed;   /* stays in place while scrolling */
-  right: 20px;       /* distance from right edge */
+  position: fixed;   
+  right: 20px;       
   top: 10%; 
   display: flex;
   flex-direction: column;
