@@ -3,8 +3,6 @@ import SignIn from "./SignIn.jsx"
 import SignUp from "./SignUp.jsx"
 
 import { useState } from "react";
-//auth
-//import { getFirestore } from "firebase/firestore";
 
 import '../App.css'
 

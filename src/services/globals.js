@@ -1,6 +1,5 @@
 //global varibles
 
-// export let allMyPosts = [];
 export let canPost = false;
 
 export function getCanPost(){
@@ -10,10 +9,5 @@ export function getCanPost(){
 
 export function changeCanPost(){
     canPost = !canPost;
-
+    
 }
-
-// export function setAllMyPosts(arr){
-//     allMyPosts = arr;
-
-// }

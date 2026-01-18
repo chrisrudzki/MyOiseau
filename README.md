@@ -1,10 +1,11 @@
-This is the latest version dec 19th, 25th, jan 5th
+# MyOiseau
+for log in:
+usertest@gmail.com Testuser123
 
-# Cool-Places2
 
-Using webpack to bundle files
+Using webpack to bundle files, using google firebase for local hosting
 
-using google firebase for local hosting
+need firebase, node.js, mapbox install locally
 
 firebase --version
 (Check if firebase is installed)
