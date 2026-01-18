@@ -1,17 +1,20 @@
 import React from 'react';
 import { useState } from "react";
 import { auth } from "../firebase";
+import '../index.css';
 
 import {
   signInWithEmailAndPassword
 } from 'firebase/auth';
 
+// inital sign in screen
 export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submittedData, setSubmittedData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   
+  // put email and password into firebase
   const handleSubmit = async () => {
     setSubmittedData({ email, password });
     try{
@@ -20,24 +23,8 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
       
     } catch (error) {
       setErrorMessage("Wrong e-mail or password, try again");
-      // setErrorMessage("invalid username or password");
-      //console.("Failed:", error.code, error.message);
     }
   };
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  const submitUser = async () => {
-
-    await sleep(1000); 
-
-    if (!auth.currentUser){
-      console.error("needs to be signed in to make post");
-      return;
-    }
-}
 
   const handleStartSubScreen = () => {onDisplayStartSub(false)};
 
@@ -46,8 +33,6 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
     <button 
     class="log-screen-button"
     onClick={handleStartSubScreen}>Sign up</button>
-
-
 
     <div>
     <h1 style={{
@@ -60,29 +45,11 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
     <div class="sign-in-inner-box-config">
     <div class="sign-in-inner-box">
 
-    <div style={{
-        fontSize: "15px",
-        textAlign: "left",
-        fontFamily: "Arial"
-        }}>Email</div>
-    <input
+    <div class="sign-in-up-info-text">Email</div>
+
+    <input class="sign-in-up-boxes"
         type="email"
         placeholder=""
-        style={{
-          paddingRight: "7px",
-          paddingLeft: "7px",
-          width: "100%",
-          height: "24px",
-          borderRadius: "1",  // makes corners perfectly square
-          border: "none",
-          outline: "none",
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          marginTop: "2px",
-          marginBottom: "7px",
-          fontWeight: "bold",
-          boxSizing: "border-box"
-        }}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
@@ -97,22 +64,8 @@ export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
     <input
         type="password"
         placeholder=""
-        style={{
-          paddingRight: "7px",
-          paddingLeft: "7px",
-          width: "100%",
-          height: "24px",
-          borderRadius: "1",  // makes corners perfectly square
-          border: "none",
-          outline: "none",
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          marginTop: "2px",
-          marginBottom: "-1px",
-          boxSizing: "border-box",
-          fontWeight: "bold",
-          textDecoration: "underline"
-        }} 
+        class="sign-in-up-boxes"
+        
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />

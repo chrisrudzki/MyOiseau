@@ -2,15 +2,13 @@ import '../index.css'
 import React, { useEffect, useContext } from 'react';
 import { useState } from "react";
 import { BrowserRouter as Router, Link } from 'react-router-dom';
-// import { getStorage } from "firebase/storage";
 import { Firestore } from "../firebase.js"
 import { doc, updateDoc } from "firebase/firestore";
 import { PostContext } from '../services/PostContext.js';
 
-
+// most on the map created by the user
 export default function Post({ content, postId, isPostDelete }){
     const { setRefresh, navBack, setInPost, delPost, curMarker } = useContext(PostContext);
-    // const storage = getStorage();
     const [text, setText] = useState(content.postDisc);
     const [editing, setEditing] = useState(false);
     

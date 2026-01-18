@@ -9,6 +9,7 @@ import { signOut } from 'firebase/auth';
 
 import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost} from '../services/postRepository.jsx';
 
+// main map screen
 export default function Map({}) {
     const [curCanPost, setCurCanPost] = useState(false);
     const [inPost, setInPost] = useState(false);

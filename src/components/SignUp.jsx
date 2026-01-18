@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from "react";
 import { auth } from "../firebase.js";
-
+import '../App.css';
 
 import { 
   getAuth,
@@ -9,6 +9,7 @@ import {
   onAuthStateChanged
 } from 'firebase/auth';
 
+// inital sign up screen
 export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
   
   const [email, setEmail] = useState('');
@@ -31,27 +32,10 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
     }
   };
 
-  const handleStartScreen = () => {onDisplayStart(false)}
-  
   const handleStartSubScreen = () => {onDisplayStartSub(true)}
 
-  const monitorAuthState = async () => {
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        console.log(user);
-      } else {
-        console.log("log in failed");
-      }
-    });
-  }
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
   return (
     <>
-
     <button 
     class="log-screen-button"
     onClick={handleStartSubScreen} >Sign In</button>
@@ -65,117 +49,47 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
     <div class="sign-in-inner-box">
 
     <div
-    style={{
-        fontSize: "15px",
-         textAlign: "left",
-         fontFamily: "Arial"
-        }}
+        class="sign-in-up-info-text"
         >Email</div>
     <input
-        type="email"
-        placeholder=" "
-        style={{
-          paddingRight: "7px",
-          paddingLeft: "7px",
-          width: "100%",
-          height: "24px",
-          borderRadius: "1",  // makes corners perfectly square
-          border: "none",
-          outline: "none",
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          marginTop: "2px",
-          marginBottom: "7px",
-          fontWeight: "bold",
-          boxSizing: "border-box"}}
+        class='sign-in-up-boxes'
         
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
-    <div
-    style={{
-        fontSize: "15px",
-         textAlign: "left",
-         fontFamily: "Arial"
-        }}
+    {/* <div
+    class="sign-in-up-info-text"
     >Username</div>
     <input
         
         placeholder=" "
-        style={{
-          paddingRight: "7px",
-          paddingLeft: "7px",
-          width: "100%",
-          height: "24px",
-          borderRadius: "1",  // makes corners perfectly square
-          border: "none",
-          outline: "none",
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          marginTop: "2px",
-          marginBottom: "7px",
-          fontWeight: "bold",
-          boxSizing: "border-box"
-        }}
-      />
+        class='sign-in-up-boxes'
+        
+      /> */}
 
     <div 
-    style={{
-        fontSize: "15px",
-         textAlign: "left",
-         fontFamily: "Arial"
-        }}>Password</div>
+    class="sign-in-up-info-text">Password</div>
     <input
         type="password"
         placeholder=" "
-        style={{
-          paddingRight: "7px",
-          paddingLeft: "7px",
-          width: "100%",
-          height: "24px",
-          borderRadius: "1",  // makes corners perfectly square
-          border: "none",
-          outline: "none",
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          marginTop: "2px",
-          marginBottom: "7px",
-          fontWeight: "bold",
-          boxSizing: "border-box"
-        }}
+        class='sign-in-up-boxes'
+        
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
 
-    <div
-    style={{
-        fontSize: "15px",
-         textAlign: "left",
-         fontFamily: "Arial"
-        }}
+    {/* <div
+    class="sign-in-up-info-text"
     >Comfirm Password</div>
 
     <input 
         type="password"
         placeholder=" "
-    style={{
-          paddingRight: "7px",
-          paddingLeft: "7px",
-          width: "100%",
-          height: "24px",
-          borderRadius: "1",  // makes corners perfectly square
-          border: "none",
-          outline: "none",
-          paddingTop: "5px",
-          paddingBottom: "5px",
-          marginTop: "2px",
-          marginBottom: "7px",
-          fontWeight: "bold",
-          boxSizing: "border-box"
-        }}
-        ></input>
+        class='sign-in-up-boxes'
+        
+    ></input> */}
 
         <p>{errorMessage}</p>
 
@@ -184,9 +98,9 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
       width: "100%",
       marginTop: "20px"
     }}
+
     class="log-screen-button"
     onClick={() => {createAccount();}}>Sign Up</button>
-
 
     </div>
     </div>

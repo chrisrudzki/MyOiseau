@@ -1,4 +1,3 @@
-
 import { getFirestore, doc as docFunc, getDocs, getDoc, collection, addDoc, deleteDoc } from "firebase/firestore";
 import { auth, Firestore } from "../firebase.js"
 import "../App.css";
@@ -85,8 +84,7 @@ export async function updatePosts(coords, url, allPosts){
             //remove from firestore, mapbox, array
              console.log("delete post form here");
         }
-        console.log("hit doc");
-
+        
         const newPosts = [];
         
         genSnapshot.forEach((docSnap) => {
@@ -102,14 +100,12 @@ export async function updatePosts(coords, url, allPosts){
            
         });
 
-        console.log("hit doc2");
-
         return newPosts;
     }
 
 
-    // return current posts
+    // return current posts 
     export function buildRoutes(inPost, allPosts){
-      return allPosts;
+        return allPosts;
   
     }
