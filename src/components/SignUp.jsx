@@ -3,6 +3,8 @@ import { useState } from "react";
 import { auth } from "../firebase.js";
 import '../App.css';
 
+import { storeNewUser } from '../services/postRepository.jsx';
+
 import { 
   getAuth,
   createUserWithEmailAndPassword,
@@ -14,24 +16,30 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [submittedData, setSubmittedData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-
+  
   const createAccount = async () => {
-    setSubmittedData({ email, password });
+    //setSubmittedData({ email, password, username });
     try {
+      if (username.includes(" ")) {
+      throw new Error(" ");
+      }
+      
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("Sucsess:", email, password);
-    }
-    catch(error) {
+
+      const url = crypto.randomUUID();
+      storeNewUser(email, url, username);
+
+    }catch(error) {
       const rawMessage = error?.message ? String(error.message) : String(error);
       const match = rawMessage.match(/^Firebase:\s*(.+?)\s*\(/);
       const cleanMessage = match ? match[1] : rawMessage;
       setErrorMessage("invalid username or password");
-
     }
   };
-
   const handleStartSubScreen = () => {onDisplayStartSub(true)}
 
   return (
@@ -58,15 +66,16 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
         onChange={(e) => setEmail(e.target.value)}
       />
 
-    {/* <div
+    <div
     class="sign-in-up-info-text"
     >Username</div>
     <input
-        
         placeholder=" "
         class='sign-in-up-boxes'
-        
-      /> */}
+
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
 
     <div 
     class="sign-in-up-info-text">Password</div>

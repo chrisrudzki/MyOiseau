@@ -8,7 +8,7 @@ import {
 } from 'firebase/auth';
 
 // inital sign in screen
-export default function SignIn({ onDisplayStart, onDisplayStartSub }) {
+export default function SignIn({ onDisplayStartSub }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submittedData, setSubmittedData] = useState(null);

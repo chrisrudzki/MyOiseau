@@ -5,6 +5,10 @@ import Post from "../components/Post.jsx"
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
+
+
+
+
 // update posts in firestore
 export async function updatePosts(coords, url, allPosts){
     
@@ -54,7 +58,6 @@ export async function updatePosts(coords, url, allPosts){
             const data = docSnap.data();
             newPosts.push(<Route key={data.url} path={`/${data.url}`} element={<Post content={data} postId={docSnap.id} isPostDelete={handlePostDelete}/>} />);
         });
-
         return newPosts;
     }
 
@@ -109,3 +112,82 @@ export async function updatePosts(coords, url, allPosts){
         return allPosts;
   
     }
+
+
+
+    //update users, create new user
+    export async function storeNewUser(email, url, username){
+
+        let docRef = null;
+
+        console.log("here yo");
+
+        try {
+        docRef = await addDoc(collection(Firestore, "users"), {
+            userEmail : email,
+            userUsername: username,
+            profilePageUrl: url,
+            userId: auth.currentUser.uid,
+          });
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
+    }
+
+
+    export async function getUserUrl(uId){
+        const genSnapshot = await getDocs(collection(Firestore, "users"));
+
+        let profPageUrl = null;
+        
+        genSnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            console.log("here rep ");
+            if (data.userId == uId){
+                console.log("here 5", data.userId);
+                console.log("returning url: ", data.profilePageUrl);
+                profPageUrl = data.profilePageUrl;
+            }
+        });
+
+        return profPageUrl;
+        // console.log("profile not found", data.userId);
+        // return null;
+    }
+
+    export async function getUserData(url){
+        const genSnapshot = await getDocs(collection(Firestore, "users"));
+
+        let username = null;
+        
+        genSnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            console.log("here rep ");
+            if (data.profilePageUrl == url){
+                console.log("here 5", data.userUsername);
+                console.log("returning username: ", data.userUsername);
+                username = data.userUsername;
+            }
+        });
+
+        return username;
+        // console.log("profile not found", data.userId);
+        // return null;
+    }
+
+
+    
+
+    //  export async function getUserInfo(uId){
+
+    //     const genSnapshot = await getDocs(collection(Firestore, "users"));
+        
+    //     genSnapshot.forEach((docSnap) => {
+    //         const data = docSnap.data();
+    //         if (data.userId == uId){
+    //             return data.url;
+    //             //return all relevenet info for profile
+    //         }
+    //     });
+
+    // }

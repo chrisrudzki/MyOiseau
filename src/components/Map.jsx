@@ -4,31 +4,37 @@ import { PostContext } from '../services/PostContext.js'
 import { auth } from "../firebase.js";
 import mapboxgl from 'mapbox-gl'
 import { changeCanPost, getCanPost } from "../services/globals.js";
-import { BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
+import UserProfile from './UserProfile.jsx';
 
-import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost} from '../services/postRepository.jsx';
+import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost, getUserUrl} from '../services/postRepository.jsx';
 
 // main map screen
-export default function Map({}) {
+export default function Map({ myUserId }) {
     const [curCanPost, setCurCanPost] = useState(false);
-    const [inPost, setInPost] = useState(false);
+    const [inPopUp, setInPopUp] = useState(false);
     const [allPosts, setPosts] = useState([]);
     const [refresh, setRefresh] = useState(0);
     const [curMarker, setCurMarker] = useState(null);
+
+    const [curUserId, setCurUserId] = useState(null);
+
+    const [curUsername, setCurUsername] = useState(null);
+    const [curEmail, setCurEmail] = useState(null);
+    const [curUserUrl, setCurUserUrl] = useState(null);
 
     const mapRef = useRef(null);
     const navigate = useNavigate();
 
     function navBack(){
-      setInPost(false);
+      setInPopUp(false);
       navigate(-1); 
     }
 
     // delete posts
     async function delPost(url){
       console.log("del post");
-
       // elete post in backend
       const updatedPosts = await doDelPost(url);
       setPosts(updatedPosts); 
@@ -36,6 +42,25 @@ export default function Map({}) {
       setRefresh(r => r + 1);
       
     }
+    
+    //is this needed ??
+    // useEffect(() => {
+    //   async function getUserUrlInner(){
+    //   //query all posts for matching user id
+    //   //populate info for profile component 
+    //     console.log("in map", curUserId);
+    //     const userUrl = await getUserUrl(curUserId);
+    //     console.log("here 4", userUrl);
+
+    //   // setCurUsername();
+    //   // setCurEmail();
+    //     setCurUserUrl(userUrl);
+    //   }
+
+    //   getUserUrlInner();
+
+    // }, [curUserId]);//put in curUserId
+
 
     useEffect(() => {
     if (!import.meta.env.VITE_MAPBOX_ACCESS_TOKEN){
@@ -61,7 +86,7 @@ export default function Map({}) {
 
       // update current posts in backend
       const updatedPosts = await updatePosts(coords, url, allPosts);
-
+        
       setPosts(updatedPosts); 
       
       // set new pin on map
@@ -121,6 +146,14 @@ export default function Map({}) {
       navigate("/" + url);
     }
 
+    async function handleProfileButton() {
+      if (!myUserId) return;
+
+      const userUrl = await getUserUrl(myUserId);
+      navigate("/" + userUrl);
+    
+    }
+
     // refresh page with post routes
     useEffect(() => {
       async function setRoutesFunc(){
@@ -142,22 +175,23 @@ export default function Map({}) {
         
         <button onClick={handlePostButton} style={{ pointerEvents: "auto", backgroundColor: curCanPost ? "red" : "unset" }}>post</button>
 
-        <button style={{ pointerEvents: "auto" }}>profile</button>
+        <button onClick={handleProfileButton} disabled={!myUserId} style={{ pointerEvents: "auto" }}> profile </button>
+
         <button style={{ pointerEvents: "auto" }}>friends</button>
-
         
         </div>
         </div>
-
         
-       <PostContext.Provider value={{ refresh, setRefresh, navBack, setInPost, delPost, curMarker}}>
-    <div className="overlay-post" style={{ pointerEvents: inPost ? "auto" : "none" }}>
+       <PostContext.Provider value={{ refresh, setRefresh, navBack, setInPopUp, delPost, curMarker}}>
+    <div className="overlay-post" style={{ pointerEvents: inPopUp ? "auto" : "none" }}>
        <Routes>
            {
            allPosts.map( Post => (
              Post
            ))
           }
+          <Route path="/:curUserUrl" element={<UserProfile />} />
+
         </Routes>
      </div>
        </PostContext.Provider>

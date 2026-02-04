@@ -8,16 +8,16 @@ import { PostContext } from '../services/PostContext.js';
 
 // most on the map created by the user
 export default function Post({ content, postId, isPostDelete }){
-    const { setRefresh, navBack, setInPost, delPost, curMarker } = useContext(PostContext);
+    const { setRefresh, navBack, setInPopUp, delPost, curMarker } = useContext(PostContext);
     const [text, setText] = useState(content.postDisc);
     const [editing, setEditing] = useState(false);
     
     useEffect(() => {
-        setInPost(true);
+        setInPopUp(true);
     }, []);
 
     function handleExit(){
-        setInPost(false);
+        setInPopUp(false);
     }
 
     function handleText(newText){
