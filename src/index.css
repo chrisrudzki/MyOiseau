@@ -169,6 +169,28 @@ button {
   /* border-radius: 8px; */
 }
 
+ .friendReq-outer-box {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  width: 20%;
+
+
+}
+
+.friendReq-box {
+  width: 100vw;
+  height: 50%;
+  background-color: #ABABAB;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 1000; 
+  justify-content: center;
+  align-items: center;
+  /* border-radius: 8px; */
+}
+
 
 .overlay-post {
   display: flex;

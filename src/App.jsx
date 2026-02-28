@@ -10,27 +10,38 @@ import {onAuthStateChanged} from 'firebase/auth';
 
 function App() {
   const [curStartDisplay, setCurStartDisplay] = useState(true);
+  const [userId, setUserId] = useState();
   
   useEffect(() => {
     
     // if a user exists, display map
+    // async function getUser(){
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(user, " User is logged in.");
-        setCurStartDisplay(false);
-      } else {
-        console.log("User is logged out.");
-        setCurStartDisplay(true);
-      }
+      
+    if (user) {
+      setUserId(user.uid);
+      setCurStartDisplay(false);
+      console.log(user.uid, "user id");
+    } else {
+      setUserId(null);
+      setCurStartDisplay(true);
+      console.log("User is logged out.");
+    }
     });
 
+
+    // getUser();
+
     return () => unsubscribe();
+
     }, []);
 
   return (
     <>
     {curStartDisplay ? <StartScreen onDisplayStart={setCurStartDisplay}/> : undefined}
-      <Map></Map>
+    {/* <Map myUserId={userId}></Map> */}
+    {userId && <Map myUserId={userId} />}
     </>
   )
 }
