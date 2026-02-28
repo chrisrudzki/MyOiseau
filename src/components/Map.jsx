@@ -7,6 +7,8 @@ import { changeCanPost, getCanPost } from "../services/globals.js";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import UserProfile from './UserProfile.jsx';
+import Friends from './Friends.jsx';
+
 
 import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost, getUserUrl} from '../services/postRepository.jsx';
 
@@ -23,6 +25,8 @@ export default function Map({ myUserId }) {
     const [curUsername, setCurUsername] = useState(null);
     const [curEmail, setCurEmail] = useState(null);
     const [curUserUrl, setCurUserUrl] = useState(null);
+
+    const [showFriends, setShowFriends] = useState(false);
 
     const mapRef = useRef(null);
     const navigate = useNavigate();
@@ -127,7 +131,7 @@ export default function Map({ myUserId }) {
     mapRef.current.on('click', handleMapClick);
 
     //after mapRef is created dirNavigate
-    setPostMarkerRefresh(mapRef, navTo, setCurMarker);
+    setPostMarkerRefresh(mapRef, navTo, setCurMarker, myUserId);
 
     }, []);
 
@@ -151,18 +155,24 @@ export default function Map({ myUserId }) {
 
       const userUrl = await getUserUrl(myUserId);
       navigate("/" + userUrl);
-    
     }
 
+     async function handleFriendsButton() {
+      
+      // const userUrl = await getUserUrl(myUserId);
+      setShowFriends(true);
+    }
+    
     // refresh page with post routes
     useEffect(() => {
       async function setRoutesFunc(){
         const myPosts = await setPostRefresh();
         setPosts(myPosts);
+        
       }
       setRoutesFunc();
 
-      }, [refresh]);
+    }, [refresh]);
 
 
     return (
@@ -177,13 +187,15 @@ export default function Map({ myUserId }) {
 
         <button onClick={handleProfileButton} disabled={!myUserId} style={{ pointerEvents: "auto" }}> profile </button>
 
-        <button style={{ pointerEvents: "auto" }}>friends</button>
+        <button onClick={handleFriendsButton} style={{ pointerEvents: "auto" }}>friends</button>
         
         </div>
         </div>
         
-       <PostContext.Provider value={{ refresh, setRefresh, navBack, setInPopUp, delPost, curMarker}}>
+
+       <PostContext.Provider value={{ refresh, setRefresh, navBack, setInPopUp, delPost, curMarker, setShowFriends, myUserId}}>
     <div className="overlay-post" style={{ pointerEvents: inPopUp ? "auto" : "none" }}>
+       
        <Routes>
            {
            allPosts.map( Post => (
@@ -193,8 +205,16 @@ export default function Map({ myUserId }) {
           <Route path="/:curUserUrl" element={<UserProfile />} />
 
         </Routes>
-     </div>
-       </PostContext.Provider>
+     
+       {showFriends ? (
+       <Friends></Friends>
+      ) : (
+        <></>
+      )}
+
+    </div>
+      </PostContext.Provider>
+
         <div id="map" style={{ width: '100vw', height: '100vh' }}></div>
         </>
         );

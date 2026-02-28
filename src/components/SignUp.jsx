@@ -40,6 +40,7 @@ export default function SignUp({ onDisplayStart, onDisplayStartSub }) {
       setErrorMessage("invalid username or password");
     }
   };
+  
   const handleStartSubScreen = () => {onDisplayStartSub(true)}
 
   return (

@@ -8,10 +8,8 @@ export default function UserProfile(){
     const { setRefresh, navBack, setInPopUp, delPost, curMarker } = useContext(PostContext);
     const [curUsername, setCurUsername] = useState(null);
 
-
     const { curUserUrl } = useParams();
     
-
     useEffect(() => {
         console.log("post url ", curUserUrl);
         setInPopUp(true);
@@ -19,14 +17,10 @@ export default function UserProfile(){
 
     useEffect(() => {
         async function setUserData(){
-
         let username = await getUserData(curUserUrl);
         setCurUsername(username);
-
         }
-
         setUserData();
-
     }, []);
     
     function handleExit(){
@@ -38,7 +32,7 @@ return(
     <div className="post-outer-box">
     <div className="post-box">
 
-         
+    
          <Link to="/" >
             <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvenets:"auto" }}>X</button>
          </Link>
