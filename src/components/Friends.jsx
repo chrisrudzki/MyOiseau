@@ -29,7 +29,6 @@ export default function Friends({}){
             const friends = await getFriends(myUserId);
             setFriends(friends);
             
-            
         }
 
         updateFriends();

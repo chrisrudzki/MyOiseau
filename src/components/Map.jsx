@@ -9,8 +9,7 @@ import { signOut } from 'firebase/auth';
 import UserProfile from './UserProfile.jsx';
 import Friends from './Friends.jsx';
 
-
-import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost, getUserUrl} from '../services/postRepository.jsx';
+import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost, getUserUrl, addPostGraphics} from '../services/postRepository.jsx';
 
 // main map screen
 export default function Map({ myUserId }) {
@@ -90,27 +89,32 @@ export default function Map({ myUserId }) {
 
       // update current posts in backend
       const updatedPosts = await updatePosts(coords, url, allPosts);
-        
-      setPosts(updatedPosts); 
+      
+      setPosts(updatedPosts);
       
       // set new pin on map
-      const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]).addTo(mapRef.current);
-  
-      Marker.getElement().addEventListener("click", ()=> {
-        console.log("got to initalize");
 
-        setCurMarker(Marker);
-        console.log("marker: ", Marker);
-        handlePostClick(url);
-      });
+      //rem via
+      // const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]).addTo(mapRef.current);
+      
+      // rem via 
+      // Marker.getElement().addEventListener("click", ()=> {
+      //   console.log("got to initalize");
+
+      //   setCurMarker(Marker);
+      //   console.log("marker: ", Marker);
+      //   handlePostClick(url);
+      // });
 
       console.log("got here");
 
-      try{
-      Marker.getElement().classList.add("post-pin");
-      }catch(d){
-        console.log("marker error !");
-      }
+      await setPostMarkerRefresh(mapRef, navTo, setCurMarker, myUserId);
+      addPostGraphics(mapRef);
+      // try{
+      // Marker.getElement().classList.add("post-pin");
+      // }catch(d){
+      //   console.log("marker error !");
+      // }
       }
     }
 
@@ -134,6 +138,15 @@ export default function Map({ myUserId }) {
     setPostMarkerRefresh(mapRef, navTo, setCurMarker, myUserId);
 
     }, []);
+
+    useEffect(() => {
+    const interval = setInterval(() => {
+      addPostGraphics(mapRef)
+    }, 2000); // 2000ms = 2 seconds
+
+    return () => clearInterval(interval); // cleanup
+    }, []); // empty deps = run once
+
 
    
     const logout = async () => {
