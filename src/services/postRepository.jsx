@@ -210,23 +210,23 @@ export async function updatePosts(coords, url, allPosts){
 
     // update markers on map
 
-
-
     //check current user id and current user friends through doc id
     export async function setPostMarkerRefresh(mapRef, navTo, setCurMarker, userUID){
-        
-        //make potential users
+        // make potential users
+        // console.log("test9090: ", userUID);//userId
 
-        console.log("test9090: ", userUID);//userId
+        console.log("setPostMarker Func");
 
-        let userId_active = [];
+        let userId_active = [];//user and friends
 
         userId_active[0] = userUID;
 
+        //get current user
         const q = query(collection(Firestore, "users"), where("userId", "==", userUID));
 
         const snapshot = await getDocs(q);
         
+        //store user and user friends 
         for (const document of snapshot.docs) {
             const friends_arr = document.data().friends ?? [];
 
@@ -241,55 +241,64 @@ export async function updatePosts(coords, url, allPosts){
         }
         }
         
-        console.log("my array:", userId_active);
-        console.log("lenfth", userId_active.length);
-
         const querySnapshot = await getDocs(collection(Firestore, "posts"));
 
+        //clear old markers
         activeMarkers.forEach(m => m.remove());
         activeMarkers = [];
 
+        const moodGroups = {};
+
+        //go through all posts
         querySnapshot.forEach((docSnap) => {
+          
           const data = docSnap.data();
-          
-          console.log("post user:", data.postUser);
-          console.log("len", userId_active.length);
-          
+          //   console.log("post user:", data.postUser);
+          //   console.log("len", userId_active.length);
           for(let i = 0;i < userId_active.length ;i++){//go through all potential users #
-            console.log("m");
+            // console.log("m");
             if(userId_active[i] == data.postUser){//check if the post matches pot user
+            const mood = data.mood;
+
+            const key = `${mood}_${data.postUser}`; // e.g. "happy_abc123"
+
+            if (!moodGroups[key]) {
+                moodGroups[key] = [];
+            }
+
+            moodGroups[key].push([data.Longitude, data.Latitude]);
+            
             //addSource
           
-        console.log("CREATE ELEMENT");
-        const ele = document.createElement('div');
-        ele.style.cssText = `
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #7c83fd;
-        border: 3px solid white;
-        box-sizing: border-box;
-        cursor: pointer;
-        `;
+            //create inner post marker
+            // console.log("CREATE ELEMENT");
+            const ele = document.createElement('div');
+            ele.style.cssText = `
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #7c83fd;
+            border: 3px solid white;
+            box-sizing: border-box;
+            cursor: pointer;
+            `;
 
+            if (!document.getElementById('pulse-style')) {
+            const style = document.createElement('style');
+            style.id = 'pulse-style';
+            style.textContent = `
+            @keyframes pulse-ring {
+            0%   { transform: scale(.5); opacity: .8; }
+            100% { transform: scale(2); opacity: 0; }
+            }
+            `;
+            document.head.appendChild(style);
+            }
 
-if (!document.getElementById('pulse-style')) {
-  const style = document.createElement('style');
-  style.id = 'pulse-style';
-  style.textContent = `
-    @keyframes pulse-ring {
-      0%   { transform: scale(.5); opacity: .8; }
-      100% { transform: scale(2); opacity: 0; }
-    }
-  `;
-    document.head.appendChild(style);
-    }
+            const Marker = new mapboxgl.Marker({ element: ele }).setLngLat([data.Longitude, data.Latitude])
 
-    const Marker = new mapboxgl.Marker({ element: ele }).setLngLat([data.Longitude, data.Latitude])
-
-
-    // const Marker = new mapboxgl.Marker({ element: ele, anchor: 'center' }).setLngLat([data.Longitude, data.Latitude])
-        //   const Marker = new mapboxgl.Marker().setLngLat([data.Longitude, data.Latitude]);
+            // const Marker = new mapboxgl.Marker({ element: ele, anchor: 'center' }).setLngLat([data.Longitude, data.Latitude])
+            // const Marker = new mapboxgl.Marker().setLngLat([data.Longitude, data.Latitude]);
 
           Marker.getElement().addEventListener("click", ()=> {
           setCurMarker(Marker);
@@ -300,11 +309,57 @@ if (!document.getElementById('pulse-style')) {
           Marker.addTo(mapRef.current);
           activeMarkers.push(Marker);
 
-        
         }// if
         }// for
-
       });
+
+      // Build a GeoJSON feature for each mood group
+    const lineFeatures = Object.entries(moodGroups)
+    .filter(([mood, coords]) => coords.length > 1) // need at least 2 points for a line
+    .map(([mood, coords]) => ({
+        type: "Feature",
+        geometry: {
+            type: "LineString",
+            coordinates: coords
+        },
+        properties: { mood }
+    }));
+
+    
+    // Add or update the lines source
+    if (!mapRef.current.getSource('mood-lines')) {
+    mapRef.current.addSource('mood-lines', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: lineFeatures }
+    });
+
+    mapRef.current.addLayer({
+        id: 'mood-lines',
+        type: 'line',
+        source: 'mood-lines',
+        paint: {
+            'line-width': 7,
+            'line-dasharray': [2, 1],
+            'line-opacity': 0.3,
+            'line-color': [
+                'match', ['get', 'mood'],
+                'happy',  '#FFD700',
+                'sad',    '#6495ED',
+                'angry',  '#FF4500',
+                /* default */ '#7c83fd'
+            ]
+        }
+    });
+
+
+} else {
+    // Already exists, just update data
+    mapRef.current.getSource('mood-lines').setData({
+        type: 'FeatureCollection',
+        features: lineFeatures
+    });
+}
+
 
       // in setPostMarkerRefresh, replace your addSource/addLayer with this:
 
@@ -344,8 +399,8 @@ if (!mapRef.current.getSource('posts')) {
         // source already exists, just update the data
         mapRef.current.getSource('posts').setData({
         type: 'FeatureCollection',
-        features: querySnapshot.docs.map(p => {
-
+        features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => {
+        
         let radius = 100;
 
         if(p.data().has_exit == true){
@@ -376,13 +431,117 @@ if (!mapRef.current.getSource('posts')) {
 
 }//setPostMarkerRefresh
 
-    export async function addPostGraphics(mapRef){
+export async function addPostGraphics(mapRef, userUID){
+     
+        let userId_active = [];//user and friends
+
+        const moodGroups = {};
+
+
+        // const mood = data.mood;
+
+        // const key = `${mood}_${data.postUser}`; // e.g. "happy_abc123"
+
+        userId_active[0] = userUID;
+
+        //  if (!moodGroups[key]) {
+        //         moodGroups[key] = [];
+        // }
+
+        // moodGroups[key].push([data.Longitude, data.Latitude]);
+            
+
+        //get current user
+        const q = query(collection(Firestore, "users"), where("userId", "==", userUID));
+
+        const snapshot = await getDocs(q);
+
+        //store user and user friends 
+        for (const document of snapshot.docs) {
+            const friends_arr = document.data().friends ?? [];
+        for (const friend of friends_arr) {
+            const docRef = docFunc(Firestore, "users", friend.userId);
+            const snap = await getDoc(docRef);
+        if (snap.exists()) {
+            userId_active.push(snap.data().userId);
+        }
+        }//for
+
+        }//if
 
     const querySnapshot = await getDocs(collection(Firestore, "posts"));
 
+    querySnapshot.forEach((docSnap) => {
+          
+          const data = docSnap.data();
+          //   console.log("post user:", data.postUser);
+          //   console.log("len", userId_active.length);
+          for(let i = 0;i < userId_active.length ;i++){//go through all potential users #
+            // console.log("m");
+            if(userId_active[i] == data.postUser){//check if the post matches pot user
+            const mood = data.mood;
 
-    if (!mapRef.current.getSource('posts')) {
-  mapRef.current.addSource('posts', {
+            const key = `${mood}_${data.postUser}`; // e.g. "happy_abc123"
+
+            if (!moodGroups[key]) {
+                moodGroups[key] = [];
+            }
+
+            moodGroups[key].push([data.Longitude, data.Latitude]);
+
+            }
+        }
+    });
+
+    const lineFeatures = Object.entries(moodGroups)
+    .filter(([mood, coords]) => coords.length > 1) // need at least 2 points for a line
+    .map(([mood, coords]) => ({
+        type: "Feature",
+        geometry: {
+            type: "LineString",
+            coordinates: coords
+        },
+        properties: { mood }
+    }));
+
+    
+    // Add or update the lines source
+    if (!mapRef.current.getSource('mood-lines')) {
+    mapRef.current.addSource('mood-lines', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: lineFeatures }
+    });
+
+    mapRef.current.addLayer({
+        id: 'mood-lines',
+        type: 'line',
+        source: 'mood-lines',
+        paint: {
+            'line-width': 7,
+            'line-dasharray': [2, 1],
+            'line-opacity': 0.3,
+            'line-color': [
+                'match', ['get', 'mood'],
+                'happy',  '#FFD700',
+                'sad',    '#6495ED',
+                'angry',  '#FF4500',
+                /* default */ '#7c83fd'
+            ]
+        }
+    });
+
+
+} else {
+    // Already exists, just update data
+    mapRef.current.getSource('mood-lines').setData({
+        type: 'FeatureCollection',
+        features: lineFeatures
+    });
+    }
+        
+
+    if(!mapRef.current.getSource('posts')) {
+    mapRef.current.addSource('posts', {
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
@@ -390,9 +549,9 @@ if (!mapRef.current.getSource('posts')) {
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
         properties: { radius: p.data().radius }
-      }))
-    }
-  });
+         }))
+        }
+    });
 
    mapRef.current.addLayer({
   id: 'post-circles',
@@ -411,17 +570,15 @@ if (!mapRef.current.getSource('posts')) {
   }
 });
 } else {
-
         const now = new Date();
         // source already exists, just update the data
         mapRef.current.getSource('posts').setData({
         type: 'FeatureCollection',
-        features: querySnapshot.docs.map(p => {
+        features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => {
 
         let radius = 100;
-
-        if(p.data().has_exit == true){
         
+        if(p.data().has_exit == true){
             const data = p.data();
             radius = 1 - (now.getTime() - data.posted_date) / ((data.moodLvl * 3) * (1000 * 60 * 20) + data.boosted_days * (1000 * 60 * 20)); // 1000 * 60 * 60 * 24 to include hours
             radius = radius * 100;
@@ -434,7 +591,7 @@ if (!mapRef.current.getSource('posts')) {
             radius = p.data().radius;
         }
 
-        console.log("post: ", p.data().postDisc, "rad: ", radius);
+        // console.log("post: ", p.data().postDisc, "rad: ", radius);
         
 
         return {    
@@ -444,10 +601,17 @@ if (!mapRef.current.getSource('posts')) {
         }
 
 
-    };
+        };
     })
   });
+
 }//else
+
+
+
+
+
+
 //     } else {
 //         // source already exists, just update the data
 //         mapRef.current.getSource('posts').setData({
@@ -460,9 +624,7 @@ if (!mapRef.current.getSource('posts')) {
 //   });
 
 // }
-
-
-    }
+    }//addPostGraphics
 
     // delete post by updating post array
     export async function doDelPost(url){

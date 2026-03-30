@@ -124,52 +124,67 @@ export default function Friends({}){
     <div className="post-outer-box">
     <div className="post-box">
 
-         <input
         
-        placeholder=""
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+         
 
         {showFriendRequestBox ? (
-        <div className="friendReq-outer-box">
+
+        <div className="friendReq-outer-box" style={{position: "fixed", zIndex: 2001, top: "37%", left: "50%", transform: "translate(-50%, -50%)", width:"380px", display: "flex", alignItems: "center"}}>
         <div className="friendReq-box">
-        <button onClick={() => { handleExitFriendReq(); }} style={{ pointerEvenets:"auto" }}>X</button>
+
+
+        <button onClick={() => { handleExitFriendReq(); }} style={{ pointerEvenets:"auto", marginLeft: "90%" }}>X</button>
         
+        <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: "10px"
+    }}>
         {username}
-
-        <button onClick={() => { handleSendFriendRequest(); }} style={{ pointerEvenets:"auto" }}>Send Friend Request</button>
+        <button onClick={() => { handleSendFriendRequest(); }} class="log-screen-button" style={{ pointerEvenets:"auto", width:"170px" }}>Send Friend Request</button>
+        </div>
         
-
         </div>
         </div>
         ) : (
         <></>
         )}
+        <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvenets:"auto", marginLeft: "auto" }}>X</button>
+        </div>
+
+
+
+        <p>Search for friends</p>
+        <div style={{ display: "flex" }}>
+        <input style={{height: "50%", marginTop: "1px", marginBottom: "20px", width: "100%"}}
+        placeholder=""
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        />
 
         <button 
         style={{
-        width: "100%",
-        marginTop: "20px"
+        width: "30%",
+        marginTop: "1px",
+        marginBottom: "20px",
+        marginLeft: "auto"
         }}
         class="log-screen-button"
         onClick={() => {searchUser();}}>Search</button>
+        </div>
+    
 
-    <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvenets:"auto" }}>X</button>
+        
          <p>Friend requests </p>
         {
-             
            <ul>
            
         
-            {/* //CONSTRUCT LISTS USING data using data.id and data username
-            //for friend requests 
-            
-            // do the same for friends but friends has a diffrent onClick handler */}
-
             {allFriendReqs ? (
        allFriendReqs.map(FriendReqs => (
-             <li key={FriendReqs.userId} >
+             <li style={{ fontSize: "13px"}} key={FriendReqs.userId} >
              <span>{FriendReqs.username}</span>
 
              <button onClick={() => handleAddFriend(FriendReqs.userId)}>
@@ -196,12 +211,14 @@ export default function Friends({}){
         </ul>
           }
 
-          <p>Friends </p>
+          <p style={{
+        marginTop: "50px",
+        }}>Friends </p>
 
 
           {allFriends ? (
        allFriends.map(Friends => (
-             <li key={Friends.userId} >
+             <li style={{ fontSize: "13px"}} key={Friends.userId} >
              <span>{Friends.username}</span>
 
              
