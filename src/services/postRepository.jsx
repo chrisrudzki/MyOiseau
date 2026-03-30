@@ -325,40 +325,44 @@ export async function updatePosts(coords, url, allPosts){
         properties: { mood }
     }));
 
-    
+
+
+    //TESTING GETTING RID OF THIS 
     // Add or update the lines source
-    if (!mapRef.current.getSource('mood-lines')) {
-    mapRef.current.addSource('mood-lines', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: lineFeatures }
-    });
+//     if (!mapRef.current.getSource('mood-lines')) {
+//     mapRef.current.addSource('mood-lines', {
+//         type: 'geojson',
+//         data: { type: 'FeatureCollection', features: lineFeatures }
+//     });
 
-    mapRef.current.addLayer({
-        id: 'mood-lines',
-        type: 'line',
-        source: 'mood-lines',
-        paint: {
-            'line-width': 7,
-            'line-dasharray': [2, 1],
-            'line-opacity': 0.3,
-            'line-color': [
-                'match', ['get', 'mood'],
-                'happy',  '#FFD700',
-                'sad',    '#6495ED',
-                'angry',  '#FF4500',
-                /* default */ '#7c83fd'
-            ]
-        }
-    });
+//     mapRef.current.addLayer({
+//         id: 'mood-lines',
+//         type: 'line',
+//         source: 'mood-lines',
+//         paint: {
+//             'line-width': 7,
+//             'line-dasharray': [2, 1],
+//             'line-opacity': 0.3,
+//             'line-color': [
+//                 'match', ['get', 'mood'],
+//                 'happy',  '#FFD700',
+//                 'sad',    '#6495ED',
+//                 'angry',  '#FF4500',
+//                 /* default */ '#7c83fd'
+//             ]
+//         }
+//     });
 
 
-} else {
-    // Already exists, just update data
-    mapRef.current.getSource('mood-lines').setData({
-        type: 'FeatureCollection',
-        features: lineFeatures
-    });
-}
+// } else {
+//     // Already exists, just update data
+//     mapRef.current.getSource('mood-lines').setData({
+//         type: 'FeatureCollection',
+//         features: lineFeatures
+//     });
+// }
+
+//til here - test
 
 
       // in setPostMarkerRefresh, replace your addSource/addLayer with this:
