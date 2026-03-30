@@ -168,35 +168,13 @@ export default function Post({ content, postId, isPostDelete }){
     <>
     <div className="post-outer-box">
     <div className="post-box">
-         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-  
-        <button onClick={() => { navBack(); handleDel(); }} style={{ pointerEvents: "auto" }}>
-            delete post
-        </button>
+         <button onClick={() => { navBack(); handleDel(); }} style={{ pointerEvenets:"auto" }}>delete post</button>
 
-        <Link to="/">
-            {(moodLvl != 0 && mood != "None" && text != " ") && (
-            <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvents: "auto" }}>
-                X
-            </button>
+         <Link to="/" >
+            {(moodLvl != -1 && mood != "None" && text != " ") && (
+            <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvenets:"auto" }}>X</button>
             )}
         </Link>
-
-        </div>
-        
-        {(text === " ") && (<p>What happend here?</p>)}
-        
-
-
-        <div style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        gap: "12px",
-        marginTop: "60px"
-        }}>
 
             <div class="post-inner-box-config">
             <div class="post-inner-box">
@@ -211,23 +189,22 @@ export default function Post({ content, postId, isPostDelete }){
                 </>
                 )}
             </div>
-            
-            {userPost ? <button style={{ marginTop: "30px" }} onClick={() => setEditing(true)}>edit</button> : <></>}
+            {userPost ? <button onClick={() => setEditing(true)}>edit</button> : <></>}
             </div>
             </div>
 <select
   value={mood} 
   onChange={(e) => { setMood(e.target.value); handleMood(e.target.value);}}
   style={{ padding: '8px', borderRadius: '6px' }}
-    >
+>
   <option value="" disabled>Select a Mood</option>
   <option value="Happy">Happy</option>
   <option value="Sad">Sad</option>
   <option value="Anger">Anger</option>
   <option value="Surprise">Surprise</option>
   
-    </select>
-    <div style={{ display: "flex", gap: "8px", justifyContent: "center"}}>
+</select>
+    <div style={{ display: "flex", gap: "8px" }}>
         {[1, 2, 3, 4, 5].map((n) => (
           <button
             key={n}
@@ -244,7 +221,6 @@ export default function Post({ content, postId, isPostDelete }){
       {moodLvl !== 0 && <p>{moodLvl}</p>}
     
     
-    </div>
     </div>
     </div>
     </>

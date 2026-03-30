@@ -248,4 +248,12 @@ button {
 
 }
 
+ .left-side-bar {
+  position: fixed;
+  left: 20px;
+  top: 2%;
+  display: flex;
+  flex-direction: column;
+}
+
 

@@ -9,8 +9,7 @@ import { signOut } from 'firebase/auth';
 import UserProfile from './UserProfile.jsx';
 import Friends from './Friends.jsx';
 
-
-import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost, getUserUrl} from '../services/postRepository.jsx';
+import { buildRoutes, setPostRefresh, updatePosts, setPostMarkerRefresh, doDelPost, getUserUrl, addPostGraphics} from '../services/postRepository.jsx';
 
 // main map screen
 export default function Map({ myUserId }) {
@@ -44,7 +43,6 @@ export default function Map({ myUserId }) {
       setPosts(updatedPosts); 
 
       setRefresh(r => r + 1);
-      
     }
     
     //is this needed ??
@@ -90,27 +88,32 @@ export default function Map({ myUserId }) {
 
       // update current posts in backend
       const updatedPosts = await updatePosts(coords, url, allPosts);
-        
-      setPosts(updatedPosts); 
+      
+      setPosts(updatedPosts);
       
       // set new pin on map
-      const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]).addTo(mapRef.current);
-  
-      Marker.getElement().addEventListener("click", ()=> {
-        console.log("got to initalize");
 
-        setCurMarker(Marker);
-        console.log("marker: ", Marker);
-        handlePostClick(url);
-      });
+      //rem via
+      // const Marker = new mapboxgl.Marker().setLngLat([coords.lng, coords.lat]).addTo(mapRef.current);
+      
+      // rem via 
+      // Marker.getElement().addEventListener("click", ()=> {
+      //   console.log("got to initalize");
+
+      //   setCurMarker(Marker);
+      //   console.log("marker: ", Marker);
+      //   handlePostClick(url);
+      // });
 
       console.log("got here");
 
-      try{
-      Marker.getElement().classList.add("post-pin");
-      }catch(d){
-        console.log("marker error !");
-      }
+      await setPostMarkerRefresh(mapRef, navTo, setCurMarker, myUserId);
+      addPostGraphics(mapRef, myUserId);
+      // try{
+      // Marker.getElement().classList.add("post-pin");
+      // }catch(d){
+      //   console.log("marker error !");
+      // }
       }
     }
 
@@ -135,7 +138,15 @@ export default function Map({ myUserId }) {
 
     }, []);
 
-   
+    useEffect(() => {
+    const interval = setInterval(() => {
+      addPostGraphics(mapRef, myUserId)
+    }, 2000); // 2000ms = 2 seconds
+
+    return () => clearInterval(interval); // cleanup
+    }, []); // empty deps = run once
+    
+
     const logout = async () => {
       await signOut(auth);
     }
@@ -178,17 +189,72 @@ export default function Map({ myUserId }) {
     return (
     <>
         <div class="overlay-map" style={{ pointerEvents: "none" }}>
+
+        <div className="left-side-bar">
+        <button onClick={logout} style={{ pointerEvents: "auto", padding: "5px5px5px5px" }}>Log out</button>
+        </div>
         
-        <button onClick={logout}style={{ pointerEvents: "auto" }}>log out</button>
-        
+        {/* <button onClick={logout}style={{ pointerEvents: "auto" }}>log out</button>
+         */}
         <div class="right-side-bar">
         
-        <button onClick={handlePostButton} style={{ pointerEvents: "auto", backgroundColor: curCanPost ? "red" : "unset" }}>post</button>
+        <button onClick={handlePostButton} style={{
+            pointerEvents: "auto",
+            background: "#e6e6e6",
+            border: "1px solid #3B0A45",
+            borderRadius: "50px",
+            padding: "10px 20px",
+            fontSize: "12px",
+            fontWeight: "600",
+            color: "#fff",
+            cursor: "pointer",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            transition: "all 0.15s",
+            paddingBottom: "34px",
+            backgroundColor: curCanPost ? "red" : "unset" }}>✍️</button>
 
-        <button onClick={handleProfileButton} disabled={!myUserId} style={{ pointerEvents: "auto" }}> profile </button>
+        <button onClick={handleProfileButton} disabled={!myUserId} style={{
+            pointerEvents: "auto",
+            background: "#e6e6e6",
+            border: "1px solid #3B0A45",
+            borderRadius: "50px",
+            padding: "10px 20px",
+            fontSize: "12px",
+            fontWeight: "600",
+            color: "#fff",
+            cursor: "pointer",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            transition: "all 0.15s",
+            paddingBottom: "34px"
+          }}> 👤 </button>
 
-        <button onClick={handleFriendsButton} style={{ pointerEvents: "auto" }}>friends</button>
+        {/* <button onClick={handleFriendsButton} style={{ pointerEvents: "auto" }}>friends</button>
+         */}
+         <button
+          onClick={handleFriendsButton}
+          style={{
+            pointerEvents: "auto",
+            background: "#e6e6e6",
+            border: "1px solid #3B0A45",
+            borderRadius: "50px",
+            padding: "10px 20px",
+            fontSize: "12px",
+            fontWeight: "600",
+            color: "#fff",
+            cursor: "pointer",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            transition: "all 0.15s",
+            paddingBottom: "34px"
+          }}
+        >
         
+           👥
+        
+        </button>
+
         </div>
         </div>
         

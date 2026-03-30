@@ -34,15 +34,15 @@ return(
 
     
          <Link to="/" >
-            <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvenets:"auto" }}>X</button>
+            <button onClick={() => { handleExit(); setRefresh(r => r + 1); }} style={{ pointerEvenets:"auto", marginLeft: "90%" }}>X</button>
          </Link>
 
             <div class="post-inner-box-config">
             <div class="post-inner-box">
 
-            <h1>profile</h1>
+            
 
-            <div>{"username: " + curUsername}</div>
+            <div style={{ fontSize: "25px", marginTop: "50px" }}>{"Username: " + curUsername}</div>
                 
             </div>
             </div>
