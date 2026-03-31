@@ -140,7 +140,9 @@ export default function Map({ myUserId }) {
 
     useEffect(() => {
     const interval = setInterval(() => {
+      console.log("refresh!");
       addPostGraphics(mapRef, myUserId)
+
     }, 2000); // 2000ms = 2 seconds
 
     return () => clearInterval(interval); // cleanup
