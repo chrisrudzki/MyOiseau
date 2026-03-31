@@ -15,7 +15,6 @@ export async function updatePosts(coords, url, allPosts){
     console.log("POSTED! Longitude:", coords.lng, "Latitude:", coords.lat);
       let docRef = null;
 
-    
       //get number of
       try {
             docRef = await addDoc(collection(Firestore, "posts"), {
@@ -134,6 +133,31 @@ export async function updatePosts(coords, url, allPosts){
         });
         return newPosts;
     }
+
+    // export async function setPostRefresh(myUserId){
+    // const genSnapshot = await getDocs(collection(Firestore, "posts"));
+    
+    // // get user's friends first
+    // const q = query(collection(Firestore, "users"), where("userId", "==", myUserId));
+    // const snapshot = await getDocs(q);
+    
+    // let userId_active = [myUserId];
+    // for (const document of snapshot.docs) {
+    //     const friends_arr = document.data().friends ?? [];
+    //     for (const friend of friends_arr) {
+    //         userId_active.push(friend.userId);
+    //     }
+    // }
+
+    // const newPosts = [];
+    // genSnapshot.forEach((docSnap) => {
+    //     const data = docSnap.data();
+    //     if (userId_active.includes(data.postUser)) { // ← filter here
+    //         newPosts.push(<Route key={data.url} path={`/${data.url}`} element={<Post content={data} postId={docSnap.id} isPostDelete={handlePostDelete}/>} />);
+    //     }
+    // });
+    // return newPosts;
+    // }
 
     export async function boostSimilarPosts(postId, moodLvl, mood, myUserId){
 
@@ -367,73 +391,71 @@ export async function updatePosts(coords, url, allPosts){
 
       // in setPostMarkerRefresh, replace your addSource/addLayer with this:
 
-// if (!mapRef.current.getSource('posts')) {
-//   mapRef.current.addSource('posts', {
-//     type: 'geojson',
-//     data: {
-//       type: 'FeatureCollection',
-//       features: querySnapshot.docs.map(p => ({
-//         type: 'Feature',
-//         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
-//         properties: { radius: p.data().radius }
-//       }))
-//     }//data
-//   });
+if (!mapRef.current.getSource('posts')) {
+  mapRef.current.addSource('posts', {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
+        properties: { radius: p.data().radius }
+      }))
+    }//data
+  });
 
-//     mapRef.current.addLayer({
-//   id: 'post-circles',
-//   type: 'circle',
-//   source: 'posts',
-//   paint: {
-//     'circle-radius': [
-//       'interpolate', ['exponential', 2], ['zoom'],
-//       1,  ['/', ['get', 'radius'], 100],   // zoom 1:  radius / 100
-//       15, ['*', ['get', 'radius'], 1.5],   // zoom 15: radius * 1.5
-//       20, ['*', ['get', 'radius'], 5],     // zoom 20: radius * 5
-//     ],
-//     'circle-opacity': 0.5, 
-//     'circle-pitch-alignment': 'map', // sticks to map not screen
-//     'circle-color': ['coalesce', ['get', 'color'], '#7c83fd']
-//   }//paint
-// });
+    mapRef.current.addLayer({
+  id: 'post-circles',
+  type: 'circle',
+  source: 'posts',
+  paint: {
+    'circle-radius': [
+      'interpolate', ['exponential', 2], ['zoom'],
+      1,  ['/', ['get', 'radius'], 100],   // zoom 1:  radius / 100
+      15, ['*', ['get', 'radius'], 1.5],   // zoom 15: radius * 1.5
+      20, ['*', ['get', 'radius'], 5],     // zoom 20: radius * 5
+    ],
+    'circle-opacity': 0.5, 
+    'circle-pitch-alignment': 'map', // sticks to map not screen
+    'circle-color': ['coalesce', ['get', 'color'], '#7c83fd']
+  }//paint
+});
 
-//     } else {
+    } else {
 
-//         const now = new Date();
-//         // source already exists, just update the data
-//         mapRef.current.getSource('posts').setData({
-//         type: 'FeatureCollection',
-//         features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => {
+        const now = new Date();
+        // source already exists, just update the data
+        mapRef.current.getSource('posts').setData({
+        type: 'FeatureCollection',
+        features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => {
         
-//         let radius = 100;
+        let radius = 100;
 
-//         if(p.data().has_exit == true){
+        if(p.data().has_exit == true){
         
-//             const data = p.data();
-//             radius = 1 - (now.getTime() - data.posted_date) / ((data.moodLvl * 3) * (1000 * 60 * 20) + data.boosted_days * (1000 * 60 * 20)); // 1000 * 60 * 60 * 24 to include hours
-//             radius = radius * 100;
+            const data = p.data();
+            radius = 1 - (now.getTime() - data.posted_date) / ((data.moodLvl * 3) * (1000 * 60 * 20) + data.boosted_days * (1000 * 60 * 20)); // 1000 * 60 * 60 * 24 to include hours
+            radius = radius * 100;
         
-//             if(radius < 20){
-//                 radius = 20
-//             }
+            if(radius < 20){
+                radius = 20
+            }
 
-//         }else{
-//             radius = p.data().radius;
-//         }
+        }else{
+            radius = p.data().radius;
+        }
 
-//         return {    
-//         type: 'Feature',
-//         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
-//         properties: { radius: radius, color: p.data().color 
-//         }
+        return {    
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
+        properties: { radius: radius, color: p.data().color 
+        }
 
 
-//     };
-//     })
-//   });
-// }//else
-
-    //test end down here
+    };
+    })
+  });
+}//else
 
 }//setPostMarkerRefresh
 
@@ -545,13 +567,13 @@ export async function addPostGraphics(mapRef, userUID){
     });
     }
         
-
+//added here
     if(!mapRef.current.getSource('posts')) {
     mapRef.current.addSource('posts', {
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
-      features: querySnapshot.docs.map(p => ({
+      features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
         properties: { radius: p.data().radius }

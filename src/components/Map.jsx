@@ -145,7 +145,7 @@ export default function Map({ myUserId }) {
 
     return () => clearInterval(interval); // cleanup
     }, []); // empty deps = run once
-    
+
 
     const logout = async () => {
       await signOut(auth);
@@ -280,7 +280,6 @@ export default function Map({ myUserId }) {
 
     </div>
       </PostContext.Provider>
-
         <div id="map" style={{ width: '100vw', height: '100vh' }}></div>
         </>
         );
