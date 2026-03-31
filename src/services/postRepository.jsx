@@ -572,19 +572,45 @@ export async function addPostGraphics(mapRef, userUID){
     }
         
 //added here
+
+const now = new Date();
+
     if(!mapRef.current.getSource('posts')) {
     mapRef.current.addSource('posts', {
     type: 'geojson',
     data: {
+
+
       type: 'FeatureCollection',
-      features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
+      features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => {
       //features: querySnapshot.docs.map(p => ({
+        
+        let radius = 100;
+        
+        if(p.data().has_exit == true){
+            const data = p.data();
+            radius = 1 - (now.getTime() - data.posted_date) / ((data.moodLvl * 3) * (1000 * 60 * 20) + data.boosted_days * (1000 * 60 * 20)); // 1000 * 60 * 60 * 24 to include hours
+            radius = radius * 100;
+            
+            if(radius < 20){
+                radius = 20
+            }
+
+        }else{
+            radius = p.data().radius;
+        }
+
+        return{
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
-        properties: { radius: p.data().radius, color: p.data().color }
-         }))
-        }
-    });
+        properties: { radius: radius, color: p.data().color }
+         
+        }//return
+    })
+}
+
+});
+
 
   mapRef.current.addLayer({
   id: 'post-circles',
@@ -628,13 +654,15 @@ export async function addPostGraphics(mapRef, userUID){
         return {    
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
-        properties: { radius: radius, color: p.data().color 
-        }
+        properties: { radius: radius, color: p.data().color }
+        };//return
 
-
-        };
     })
   });
+
+
+
+
 
 }//else
 
