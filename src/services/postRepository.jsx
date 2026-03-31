@@ -573,7 +573,8 @@ export async function addPostGraphics(mapRef, userUID){
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
-      features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
+      //features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
+      features: querySnapshot.docs.map(p => ({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
         properties: { radius: p.data().radius }
