@@ -394,7 +394,7 @@ export async function updatePosts(coords, url, allPosts){
 
 
       //TEST MAR 31 ALL BELOW 
-      
+
 // if (!mapRef.current.getSource('posts')) {
 //   mapRef.current.addSource('posts', {
 //     type: 'geojson',
@@ -577,8 +577,8 @@ export async function addPostGraphics(mapRef, userUID){
     type: 'geojson',
     data: {
       type: 'FeatureCollection',
-      //features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
-      features: querySnapshot.docs.map(p => ({
+      features: querySnapshot.docs.filter(p => userId_active.includes(p.data().postUser)).map(p => ({
+      //features: querySnapshot.docs.map(p => ({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
         properties: { radius: p.data().radius }
@@ -593,13 +593,13 @@ export async function addPostGraphics(mapRef, userUID){
   paint: {
     'circle-radius': [
       'interpolate', ['exponential', 2], ['zoom'],
-      1,  1,   // at zoom 1,  radius = 1px
-      15, 150, // at zoom 15, radius = 150px
-      20, 500  // at zoom 20, radius = 500px
+      1,  ['/', ['get', 'radius'], 100],   // zoom 1:  radius / 100
+        //       15, ['*', ['get', 'radius'], 1.5],   // zoom 15: radius * 1.5
+        //       20, ['*', ['get', 'radius'], 5],     // zoom 20: radius * 5    
     ],
     'circle-opacity': 0.5, 
     'circle-pitch-alignment': 'map', // sticks to map not screen
-    'circle-color': '#7c83fd'
+    'circle-color': ['coalesce', ['get', 'color'], '#7c83fd']
   }
 });
 } else {
@@ -623,9 +623,7 @@ export async function addPostGraphics(mapRef, userUID){
         }else{
             radius = p.data().radius;
         }
-
         // console.log("post: ", p.data().postDisc, "rad: ", radius);
-        
 
         return {    
         type: 'Feature',
