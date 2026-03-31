@@ -143,7 +143,7 @@ export default function Map({ myUserId }) {
       console.log("refresh!");
       addPostGraphics(mapRef, myUserId)
 
-    }, 2000); // 2000ms = 2 seconds
+    }, 500); // 2000ms = 2 seconds
 
     return () => clearInterval(interval); // cleanup
     }, []); // empty deps = run once
