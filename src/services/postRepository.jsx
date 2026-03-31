@@ -338,16 +338,18 @@ export async function updatePosts(coords, url, allPosts){
       });
 
       // Build a GeoJSON feature for each mood group
-    const lineFeatures = Object.entries(moodGroups)
-    .filter(([mood, coords]) => coords.length > 1) // need at least 2 points for a line
-    .map(([mood, coords]) => ({
-        type: "Feature",
-        geometry: {
-            type: "LineString",
-            coordinates: coords
-        },
-        properties: { mood }
-    }));
+
+      //MAR 31 330
+    // const lineFeatures = Object.entries(moodGroups)
+    // .filter(([mood, coords]) => coords.length > 1) // need at least 2 points for a line
+    // .map(([mood, coords]) => ({
+    //     type: "Feature",
+    //     geometry: {
+    //         type: "LineString",
+    //         coordinates: coords
+    //     },
+    //     properties: { mood }
+    // }));
 
 
 
@@ -469,9 +471,7 @@ export async function addPostGraphics(mapRef, userUID){
 
         const moodGroups = {};
 
-
         // const mood = data.mood;
-
         // const key = `${mood}_${data.postUser}`; // e.g. "happy_abc123"
 
         userId_active[0] = userUID;
@@ -581,12 +581,12 @@ export async function addPostGraphics(mapRef, userUID){
       //features: querySnapshot.docs.map(p => ({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [p.data().Longitude, p.data().Latitude] },
-        properties: { radius: p.data().radius }
+        properties: { radius: p.data().radius, color: p.data().color }
          }))
         }
     });
 
-   mapRef.current.addLayer({
+  mapRef.current.addLayer({
   id: 'post-circles',
   type: 'circle',
   source: 'posts',
@@ -594,8 +594,8 @@ export async function addPostGraphics(mapRef, userUID){
     'circle-radius': [
       'interpolate', ['exponential', 2], ['zoom'],
       1,  ['/', ['get', 'radius'], 100],   // zoom 1:  radius / 100
-        //       15, ['*', ['get', 'radius'], 1.5],   // zoom 15: radius * 1.5
-        //       20, ['*', ['get', 'radius'], 5],     // zoom 20: radius * 5    
+      15, ['*', ['get', 'radius'], 1.5],   // zoom 15: radius * 1.5
+      20, ['*', ['get', 'radius'], 5],     // zoom 20: radius * 5    
     ],
     'circle-opacity': 0.5, 
     'circle-pitch-alignment': 'map', // sticks to map not screen
