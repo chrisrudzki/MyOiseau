@@ -220,7 +220,7 @@ export default function Post({ content, postId, isPostDelete }){
   onChange={(e) => { setMood(e.target.value); handleMood(e.target.value);}}
   style={{ padding: '8px', borderRadius: '6px' }}
     >
-  <option value="" disabled>Select a Mood</option>
+  <option value="None" disabled>Select a Mood</option>
   <option value="Happy">Happy</option>
   <option value="Sad">Sad</option>
   <option value="Anger">Anger</option>
